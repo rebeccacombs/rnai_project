@@ -87,16 +87,16 @@ async function saveToDatabase(article: any) {
           slug: article.slug,
           abstract: article.abstract,
           authors: {
-            set: article.authors 
+            set: article.authors
           },
           journal: article.journal,
           pub_date: article.pubdate,
           keywords: {
-            set: article.keywords 
+            set: article.keywords
           },
           url: article.url,
           affiliations: {
-            set: article.affiliations 
+            set: article.affiliations
           }
         }
       });
