@@ -1,4 +1,4 @@
-import getIDsAndData from "@/actions/entrez"
+//import getIDsAndData from "@/actions/entrez"
 import prisma from "@/lib/db"
 import Link from "next/link"
 
