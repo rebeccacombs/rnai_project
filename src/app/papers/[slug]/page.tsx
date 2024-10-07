@@ -1,7 +1,9 @@
 import prisma from "@/lib/db"
 import Link from "next/link"
 
-export default async function PaperPage({ params }) {
+export default async function PaperPage({ params, }: {params: {
+    slug: string; 
+}}) {
     const paper = await prisma.paper.findUnique({
         where: {
             slug: params.slug, 
