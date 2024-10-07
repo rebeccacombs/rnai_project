@@ -9,7 +9,7 @@ const api_key = process.env.NCBI_API_KEY;
 const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
 
 
-export default async function getIDsAndData() {
+export default async function getIDsAndData(): Promise<void> {
   const authors = ['']
   const topics = ['RNAi', "siRNA", "ASO", "mRNA"]
   const dateRange = '("2020/01/01"[Date - Create] : "2024/09/18"[Date - Create])'
@@ -32,13 +32,14 @@ export default async function getIDsAndData() {
   }
 }
 
-export async function fetchIDs(query: string, num: number) { //esearches
+export async function fetchIDs(query: string, num: number): Promise<string[]> { //esearches
   try {
     const response = await axios.get(`${BASE_URL}esearch.fcgi?db=pubmed&term=${query}&retmax=${num}&retmode=json&api_key=${api_key}`);
     const idList = response.data.esearchresult.idlist
     return idList
   } catch (error) {
     console.error("Error searching IDs: ", error);
+    return []
   }
 }
 
@@ -71,7 +72,7 @@ export async function processData(data: any) {
   return pData
 }
 
-async function saveToDatabase(article: any) {
+async function saveToDatabase(article: any): Promise<void> {
   try {
     const existingArticle = await prisma.paper.findUnique({
       where: {
@@ -112,22 +113,22 @@ async function saveToDatabase(article: any) {
 
 
 const dataTools = {
-  getPMID(entry: any) { // entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.PMID._
+  getPMID(entry: any): number { // entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.PMID._
     return Number(entry)
   },
-  getSlug(title: any) { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.ArticleTitle._
+  getSlug(title: any): string { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.ArticleTitle._
     let slug = title.toLowerCase();
     slug = slug.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
     return slug;
   },
-  getAbstractText(entry: any) { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.Abstract.AbtractText
+  getAbstractText(entry: any): string { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.Abstract.AbtractText
     const text = entry.map((text: { _: string }) => {
       const piece = text._ || '';
       return `${piece}`.trim();
     })
     return text.join(" ")
   },
-  getAuthors(entry: any) { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.AuthorList.Author
+  getAuthors(entry: any): string[] { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.AuthorList.Author
     const authors = entry.map((author: { LastName: { _: string; }; ForeName: { _: string; }; }) => {
       const lastName = author.LastName._ || '';
       const foreName = author.ForeName._ || '';
@@ -135,7 +136,7 @@ const dataTools = {
     })
     return authors
   },
-  getDate(entry: any) { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.Journal.JournalIssue.PubDate
+  getDate(entry: any): string { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.Article.Journal.JournalIssue.PubDate
     if (entry.Year && entry.Year._) {
       const year = entry.Year._
       const month = (entry.Month && entry.Month._) || 'Jan';
@@ -145,7 +146,7 @@ const dataTools = {
       return "0000-Jan-01"
     }
   },
-  getKeywords(entry: any) { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.KeywordList.Keyword
+  getKeywords(entry: any): string[] { //entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.KeywordList.Keyword
     if (entry.KeywordList) {
       const keywords = entry.KeywordList.Keyword.map((keyword: { _: string }) => {
         const k = keyword._ || '';
