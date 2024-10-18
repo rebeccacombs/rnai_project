@@ -1,12 +1,12 @@
 //i want to generate new esearches for the data i am interested in 
 "use server";
-import prisma from "@/lib/db";
+//import prisma from "@/lib/db"; UNCOMMENT WHEN NPM PACKAGE UP
 //import axios from 'axios';
 //import xml2js from 'xml2js';
 
 
 
-
+//UNCOMMENT WHEN NPM PACKAGE UP
 /*
 import getIDsAndData, { buildQuery } from 'pubmed-fetch'
 
@@ -36,21 +36,21 @@ export default async function getAndSaveData(): Promise<void> {
 
 
 /*const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
- 
+
 export default async function getIDsAndData(): Promise<void> {
   const authors = ['']
   const topics = ['RNAi', "siRNA", "ASO", "mRNA"]
   const dateRange = '("2020/01/01"[Date - Create] : "2024/09/18"[Date - Create])'
   const numPapers = 15
   const query = buildQuery(authors, topics, dateRange);
- 
+
   try {
     const idList = await fetchIDs(query, numPapers);
- 
+
     if (idList && idList.length > 0) {
       const data = await fetchData(idList);
       const processedData = await processData(data);
- 
+
       for (const paper of processedData) {
         await saveToDatabase(paper);
       }
@@ -59,7 +59,7 @@ export default async function getIDsAndData(): Promise<void> {
     console.error("Error during fetch process: ", error);
   }
 }
- 
+
 export async function fetchIDs(query: string, num: number): Promise<string[]> { //esearches
   try {
     const response = await axios.get(`${BASE_URL}esearch.fcgi?db=pubmed&term=${query}&retmax=${num}&retmode=json&api_key=${api_key}`);
@@ -70,7 +70,7 @@ export async function fetchIDs(query: string, num: number): Promise<string[]> { 
     return []
   }
 }
- 
+
 export async function fetchData(id_list: any) { //efetches
   try {
     const response = await axios.get(`${BASE_URL}efetch.fcgi?db=pubmed&id=${id_list}&retmode=xml&api_key=${api_key}`)
@@ -81,7 +81,7 @@ export async function fetchData(id_list: any) { //efetches
     console.error("Error fetching ID data: ", error);
   }
 }
-//new comment just for testing 
+//new comment just for testing
 export async function processData(data: any) {
   const pData = data.PubmedArticleSet.PubmedArticle.map((article: any) => ({
     PMID: dataTools.getPMID(article.MedlineCitation.PMID._),
@@ -95,7 +95,7 @@ export async function processData(data: any) {
     url: `https://www.ncbi.nlm.nih.gov/pubmed/${article.MedlineCitation.PMID._}`,
     affiliations: dataTools.getAffiliations(article.MedlineCitation.Article.AuthorList.Author)
   }));
- 
+
   //console.log(pData)
   return pData
 }
@@ -104,7 +104,7 @@ export async function processData(data: any) {
 
 
 
-
+//UNCOMMENT WHEN NPM PACKAGE UP
 /*
 async function saveToDatabase(article: { PMID: number; title: string; slug: string; abstract: string; authors: string[]; journal: string; pubdate: Date; keywords: string[]; url: string; affiliations: string[]; }): Promise<void> {
   try {
