@@ -4,6 +4,10 @@ import prisma from "@/lib/db";
 //import axios from 'axios';
 //import xml2js from 'xml2js';
 
+
+
+
+/*
 import getIDsAndData, { buildQuery } from 'pubmed-fetch'
 
 const api_key = process.env.NCBI_API_KEY;
@@ -26,6 +30,11 @@ export default async function getAndSaveData(): Promise<void> {
     console.error("Error: ", error)
   }
 }
+*/
+
+
+
+
 /*const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
  
 export default async function getIDsAndData(): Promise<void> {
@@ -92,6 +101,11 @@ export async function processData(data: any) {
 }
 */
 
+
+
+
+
+/*
 async function saveToDatabase(article: { PMID: number; title: string; slug: string; abstract: string; authors: string[]; journal: string; pubdate: Date; keywords: string[]; url: string; affiliations: string[]; }): Promise<void> {
   try {
     const existingArticle = await prisma.paper.findUnique({
@@ -130,6 +144,10 @@ async function saveToDatabase(article: { PMID: number; title: string; slug: stri
     console.error("Error inserting article into database: ", error);
   }
 }
+  */
+
+
+
 
 /*
 const dataTools = {
