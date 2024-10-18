@@ -1,28 +1,47 @@
 //i want to generate new esearches for the data i am interested in 
 "use server";
 import prisma from "@/lib/db";
-import axios from 'axios';
-import xml2js from 'xml2js';
+//import axios from 'axios';
+//import xml2js from 'xml2js';
 
+import getIDsAndData, { buildQuery } from 'pubmed-fetch'
 
 const api_key = process.env.NCBI_API_KEY;
-const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+const authors = ['']
+const topics = ['RNAi', "siRNA", "ASO", "mRNA"]
+const dateRange = '("2024/09/19"[Date - Create] : "2024/10/15"[Date - Create])'
+const numPapers = 15
+
+const query = buildQuery(authors, topics, dateRange);
 
 
+export default async function getAndSaveData(): Promise<void> {
+  try {
+    const processedData = await getIDsAndData(query, numPapers, api_key, true);
+    for (const paper of processedData) {
+      await saveToDatabase(paper);
+    }
+  }
+  catch (error) {
+    console.error("Error: ", error)
+  }
+}
+/*const BASE_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+ 
 export default async function getIDsAndData(): Promise<void> {
   const authors = ['']
   const topics = ['RNAi', "siRNA", "ASO", "mRNA"]
   const dateRange = '("2020/01/01"[Date - Create] : "2024/09/18"[Date - Create])'
   const numPapers = 15
   const query = buildQuery(authors, topics, dateRange);
-
+ 
   try {
     const idList = await fetchIDs(query, numPapers);
-
+ 
     if (idList && idList.length > 0) {
       const data = await fetchData(idList);
       const processedData = await processData(data);
-
+ 
       for (const paper of processedData) {
         await saveToDatabase(paper);
       }
@@ -31,7 +50,7 @@ export default async function getIDsAndData(): Promise<void> {
     console.error("Error during fetch process: ", error);
   }
 }
-
+ 
 export async function fetchIDs(query: string, num: number): Promise<string[]> { //esearches
   try {
     const response = await axios.get(`${BASE_URL}esearch.fcgi?db=pubmed&term=${query}&retmax=${num}&retmode=json&api_key=${api_key}`);
@@ -42,7 +61,7 @@ export async function fetchIDs(query: string, num: number): Promise<string[]> { 
     return []
   }
 }
-
+ 
 export async function fetchData(id_list: any) { //efetches
   try {
     const response = await axios.get(`${BASE_URL}efetch.fcgi?db=pubmed&id=${id_list}&retmode=xml&api_key=${api_key}`)
@@ -67,12 +86,13 @@ export async function processData(data: any) {
     url: `https://www.ncbi.nlm.nih.gov/pubmed/${article.MedlineCitation.PMID._}`,
     affiliations: dataTools.getAffiliations(article.MedlineCitation.Article.AuthorList.Author)
   }));
-
+ 
   //console.log(pData)
   return pData
 }
+*/
 
-async function saveToDatabase(article: any): Promise<void> {
+async function saveToDatabase(article: { PMID: number; title: string; slug: string; abstract: string; authors: string[]; journal: string; pubdate: Date; keywords: string[]; url: string; affiliations: string[]; }): Promise<void> {
   try {
     const existingArticle = await prisma.paper.findUnique({
       where: {
@@ -111,7 +131,7 @@ async function saveToDatabase(article: any): Promise<void> {
   }
 }
 
-
+/*
 const dataTools = {
   getPMID(entry: any): number { // entry = data.PubmedArticleSet.PubmedArticle[IDX].MedlineCitation.PMID._
     return Number(entry)
@@ -190,3 +210,5 @@ function buildQuery(authors: string[], topics: string[], dateRange: string): str
 
 //i think i need another file for scheduling of this, also want to customize / "randomize" 
 // what is fetched and when 
+
+*/ 
