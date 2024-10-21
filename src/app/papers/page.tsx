@@ -1,4 +1,4 @@
-//import getAndSaveData from "@/actions/entrez"
+import getAndSaveData from "@/actions/entrez"
 import prisma from "@/lib/db"
 import Link from "next/link"
 
@@ -7,7 +7,7 @@ export default async function PapersPage() {
 
     const papersCount = await prisma.paper.count()
 
-    //getAndSaveData()
+    getAndSaveData()
     return (
         <main className="flex flex-col items-start gap-y-5 pt-24 text-left pl-20">
             <Link className="self-start text-gray-100 hover:underline" href={"/"}> ← Back</Link>
