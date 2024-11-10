@@ -6,8 +6,8 @@ import getIDsAndData, { buildQuery } from 'pubmed-fetch'
 const api_key = process.env.NCBI_API_KEY;
 const authors = ['']
 const topics = ['RNAi', "siRNA", "ASO", "mRNA"]
-const dateRange = '("2024/09/19"[Date - Create] : "2024/10/15"[Date - Create])'
-const numPapers = 15
+const dateRange = '("2017/01/01"[Date - Create] : "2023/11/07"[Date - Create])'
+const numPapers = 120
 
 const query = buildQuery(authors, topics, dateRange);
 

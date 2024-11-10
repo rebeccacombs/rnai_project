@@ -15,6 +15,10 @@ export default async function PaperPage({ params, }: {params: {
             <Link className="pl-20 self-start text-blue-600 hover:underline" href={"/papers/"}> ← Back</Link>
             <h1 className="text-4xl font-bold">{paper?.title}</h1>
             <h2 className="text-2xl">{paper?.pub_date.toLocaleDateString('en-CA').toString()}</h2>
+
+            <section className="mt-1">
+                <h2 className="text-xl font-semibold">Journal: {paper?.journal} </h2>
+            </section>
             
             <section className="mt-1">
                 <h2 className="text-xl font-semibold">Authors:</h2>
